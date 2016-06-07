@@ -46,7 +46,6 @@ def create_note(bits,sampling_rate,volume,freq,duration):
     max_value = int_max_value(bits)
     # An empty list
     note = []
-    duration = float(duration)
     # Fill the list with sine wave values
     for x in range(0, int(sampling_rate*duration)):
         value = volume * max_value * np.sin(2 * np.pi * freq * x / sampling_rate)
@@ -123,43 +122,24 @@ def play_song(sampling_rate,bits,channels,filename):
     channels - How many channels, e.g., 1 (mono) (int)
     filename - The name of the notefile to be parsed (string)
     """
+    pygame.mixer.pre_init(sampling_rate, -bits, channels)
     pygame.init()
-    new_round = True
-
     # screen size
     screen_width = 300
     screen_height = 300
-
-    score_font = pygame.font.SysFont(None, 50)
-    text_font = pygame.font.SysFont(None, 25)
-
     running = True
-
+    clock = pygame.time.Clock()
     game_display = pygame.display.set_mode((screen_width, screen_height))
-
-    while()
-
     with open(filename, 'r') as f:
         contents = f.read()
-    # Divide string to blocks which contain 'note:duration'
     blocks = contents.split(',')
-    # Split the block into note name, duration, volume
-    for item in blocks:
-        note, duration, volume = item.split(':')
-        # Here we must convert to float, it also automatically
-        # gets rid of line breaks at the end of lines in the file
-
-        # The duration this program is alive, right now the same as note duration
-        wait_duration = duration
+    i = 0
+    while(running):
+        note, wait_duration, volume = blocks[i].split(':')
         # Note frequencies
         freqs = calculate_note_freq(note)
-
-        # Initialize pygame mixer
-        pygame.mixer.pre_init(sampling_rate, -bits, channels)
-        pygame.init()
-
-        # Create the wave
-        melody = create_melody(bits,sampling_rate,volume,freqs,duration)
+        wait_duration = float(wait_duration)
+        melody = create_melody(bits, sampling_rate, volume, freqs, wait_duration)
         # Create a numpy array of the list, needed later.
         # Note: We don't create a numpy array earlier, because when
         # appending values to it, a new array is always created.
@@ -169,14 +149,29 @@ def play_song(sampling_rate,bits,channels,filename):
         melody = np.array(melody).astype(np.int16)
         # Create the sound
         sound = make_sound(melody)
-        # Play and loop
-        sound.play()
-        # Stop after <duration>
-        wait_duration = float(wait_duration)
-        pygame.time.delay(int(wait_duration*1000))
-        # Stop playing
-        sound.stop()
-    # If something goes wrong
+        pygame.display.flip()
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                exit()
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_SPACE:
+                    # Play and loop
+                    print("pressed")
+                    sound.play()
+                    # Stop after <duration>
+                    pygame.time.delay(int(wait_duration*1000))
+                    # Stop playing
+                    sound.stop()
+                    if i < len(blocks) - 1:
+                        i += 1
+                    else:
+                        pygame.quit()
+                        quit()
+                if event.key == pygame.K_ESCAPE:
+                    pygame.quit()
+                    exit()
+        clock.tick(10)
+
 
 
 def main():
