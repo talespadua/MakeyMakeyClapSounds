@@ -140,12 +140,6 @@ def play_song(sampling_rate,bits,channels,filename):
         freqs = calculate_note_freq(note)
         wait_duration = float(wait_duration)
         melody = create_melody(bits, sampling_rate, volume, freqs, wait_duration)
-        # Create a numpy array of the list, needed later.
-        # Note: We don't create a numpy array earlier, because when
-        # appending values to it, a new array is always created.
-        # That is not efficient.
-        # Also, in this phase the whole array is converted to integers.
-        # Floats cannot be used for pygame sndarray.
         melody = np.array(melody).astype(np.int16)
         # Create the sound
         sound = make_sound(melody)
@@ -157,14 +151,15 @@ def play_song(sampling_rate,bits,channels,filename):
                 if event.key == pygame.K_SPACE:
                     # Play and loop
                     print("pressed")
-                    sound.play()
+                    sound.play(0, int(wait_duration*1000))
                     # Stop after <duration>
-                    pygame.time.delay(int(wait_duration*1000))
-                    # Stop playing
-                    sound.stop()
+                    # pygame.time.delay(int(wait_duration*1000))
+                    # # Stop playing
+                    # sound.stop()
                     if i < len(blocks) - 1:
                         i += 1
                     else:
+                        pygame.time.delay(int(wait_duration*1000))
                         pygame.quit()
                         quit()
                 if event.key == pygame.K_ESCAPE:
