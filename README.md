@@ -15,7 +15,7 @@ Para executar, digite no terminal:
  
  python clap_music.py nome_da_musica
  
-O nome da musica deve ser o mesmo do arquivo txt correspondende na pasta musicas.
+O nome da musica deve ser o mesmo do arquivo txt correspondende na pasta musics.
   
 Para criar uma música, crie um arquivo txt com o nome da musica desejada. Nesse arquivo, cada linha receberá a nota (Funcionando apenas na escala de dó: C D E F G A B C) no formato:
 
