@@ -25,9 +25,9 @@ O valor máximo do volume deve ser 1.0 e os valores de dutação e volume devem 
 
 Exemplo:
 
-`G4:0.3:0.5
+G4:0.3:0.5
 A4:0.3:0.5
 B4:0.3:0.5
-G4:0.3:0.5`
+G4:0.3:0.5
 
 
