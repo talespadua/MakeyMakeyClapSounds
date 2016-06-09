@@ -1,19 +1,33 @@
-# Beep reader player
+# MakeyMakey Clap Music
 
-A python program that reads notes and durations from a text file and plays them back as sine waves. Also volumes are read from the file.
+Esse projeto é parte da disciplina Sistemas Multimídia e Hipermídia do curso de Ciências da Computação do Senac - SP
 
-Note frequencies are automatically calculated. There is no need for huge lookup tables.
+O programa lê um arquivo txt com notas musicais e toca as notas ao pressionar da tecla espaço. Ao invés do teclado,o usuário deve utilizar o <a href="http://www.makeymakey.com/">Makey Makey</a>,
+conforme o vídeo (link aqui)
 
-Uses pygame (mainly sndarray) to play waveforms. Requires python 2.x (unless you have a suitably new version of pygame, in which 3.x is also ok.)
+Esse projeto é baseado no projeto <a href="https://github.com/akajuvonen/beep-reader-player">Beep Reader Player</a>
 
-# Notefile format
+# Utilização
 
-The format should include note and octave, and the duration in seconds:
+Esse programa é escrito em Python 2.7 e tem como dependencia as bibliotecas Numpy e PyGame
 
-`C4:1.0,D4:1.0,E4:1.0`
+Para executar, digite no terminal:
+ 
+ python clap_music.py nome_da_musica
+ 
+O nome da musica deve ser o mesmo do arquivo txt correspondende na pasta musicas.
+  
+Para criar uma música, crie um arquivo txt com o nome da musica desejada. Nesse arquivo, cada linha receberá a nota (Funcionando apenas na escala de dó: C D E F G A B C) no formato:
 
-Note: For now, it's better not to use linebreaks, the parsing will be updated.
+`NOTA+OITAVA:DURAÇÂO:VOLUME`
 
-# Tests
+O valor máximo do volume deve ser 1.0 e os valores de dutação e volume devem ser pontos flutuantes
 
-The easiest way to run tests is `nosetests -v` .
+Exemplo:
+
+`G4:0.3:0.5
+A4:0.3:0.5
+B4:0.3:0.5
+G4:0.3:0.5`
+
+

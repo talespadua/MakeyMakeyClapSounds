@@ -150,7 +150,7 @@ def main():
     channels = 1
     # The note file
     song = str(sys.argv[1])
-    filename = "tests/" + song + ".txt"
+    filename = "musics/" + song + ".txt"
     # Play the song
     play_song(sampling_rate, bits, channels, filename)
 
