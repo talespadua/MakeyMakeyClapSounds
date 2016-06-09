@@ -3,7 +3,7 @@
 Esse projeto é parte da disciplina Sistemas Multimídia e Hipermídia do curso de Ciências da Computação do Senac - SP
 
 O programa lê um arquivo txt com notas musicais e toca as notas ao pressionar da tecla espaço. Ao invés do teclado,o usuário deve utilizar o <a href="http://www.makeymakey.com/">Makey Makey</a>,
-conforme o vídeo (link aqui)
+conforme o <a href="https://youtu.be/PjGneU0UBFw">vídeo</a>.
 
 Esse projeto é baseado no projeto <a href="https://github.com/akajuvonen/beep-reader-player">Beep Reader Player</a>
 
