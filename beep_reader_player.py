@@ -2,7 +2,7 @@
 
 import pygame
 import numpy as np
-
+import sys
 from note_file_parser import note_file_parser
 
 class NoteFileParsingException(Exception):
@@ -37,38 +37,18 @@ def create_note(bits,sampling_rate,volume,freq,duration):
     Returns:
     snd_array -- A list of sine wave values based on the current note
     """
-    # Make sure volume between 0 and 1
-    # The max int value will be multiplied by this
     if volume<0.0: volume = 0.0
     if volume>1.0: volume = 1.0
-    # Calculate the maximum int value based on the used bit value (signed int)
-    # Basically: what is the maximum signed int value for the amount of bits selected
     max_value = int_max_value(bits)
-    # An empty list
     note = []
-    # Fill the list with sine wave values
     for x in range(0, int(sampling_rate*duration)):
         value = volume * max_value * np.sin(2 * np.pi * freq * x / sampling_rate)
         note.append(value)
     return note
 
-def create_melody(bits,sampling_rate,volumes,freqs,durations):
-    """Creates and returns a melody consisting of one or more notes.
-    Arguments:
-    bits -- How many bits are used in the values, e.g., 16
-    sampling_rate -- How many samples per second, e.g., 44100
-    volumes -- A list of volumes for individual notes
-    freqs -- A list of frequencies for individual notes
-    durations -- Note durations in a list
-    Returns:
-    melody -- A list of wave values based on the current melody
-    """
+def create_melody(bits, sampling_rate, volumes, freqs, durations):
     melody = []
-    # Go through the list
-
-    # Create an individual note
-    note = create_note(bits,sampling_rate,volumes,freqs,durations)
-    # Add a note to the melody list
+    note = create_note(bits, sampling_rate, volumes, freqs, durations)
     melody.extend(note)
     return melody
 
@@ -80,27 +60,16 @@ def calculate_note_freq(note):
     Returns:
     The frequency of the given note
     """
-    # The name of the note, e.g., 'A'
     note_name = note[0].upper()
-    # The octave of the note, e.g., 4
     note_octave = int(note[1])
-    # The note name list
     notes = ['C','C#','D','D#','E','F','F#','G','G#','A','A#','B']
-    # The index of A in the list
     baseind = 9
-    # The index of the note in the list
     noteind = notes.index(note_name)
-    # The index difference (how many semitones difference from A)
     n = noteind - baseind
-    # Take into account the octave (relative to A4, that's why we have 4 here)
-    # Now n is the number of semitones difference from the note and A4
-    n = n + (4-note_octave)*12
-    # Approximately 2^(1/12)
+    n += (4-note_octave)*12
     a = 1.059463094359
-    # Frequency of A4
     f0 = 440
-    # The frequency calculation
-    freq = f0 * pow(a,n)
+    freq = f0 * pow(a, n)
     return freq
 
 def make_sound(melody):
@@ -122,17 +91,22 @@ def play_song(sampling_rate,bits,channels,filename):
     channels - How many channels, e.g., 1 (mono) (int)
     filename - The name of the notefile to be parsed (string)
     """
-    pygame.mixer.pre_init(sampling_rate, -bits, channels)
+    pygame.mixer.pre_init(sampling_rate, -bits, channels, 512)
+    # pygame.mixer.pre_init(44100, -16, 2, 2048)
+    pygame.mixer.init()
+
     pygame.init()
     # screen size
     screen_width = 300
     screen_height = 300
     running = True
     clock = pygame.time.Clock()
+    blocks = []
     game_display = pygame.display.set_mode((screen_width, screen_height))
     with open(filename, 'r') as f:
-        contents = f.read()
-    blocks = contents.split(',')
+        for line in f:
+            blocks.append(line)
+    #blocks = contents.split()
     i = 0
     while(running):
         note, wait_duration, volume = blocks[i].split(':')
@@ -150,12 +124,11 @@ def play_song(sampling_rate,bits,channels,filename):
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_SPACE:
                     # Play and loop
-                    print("pressed")
                     sound.play(0, int(wait_duration*1000))
                     # Stop after <duration>
-                    # pygame.time.delay(int(wait_duration*1000))
+                    pygame.time.delay(int(wait_duration*1000))
                     # # Stop playing
-                    # sound.stop()
+                    sound.stop()
                     if i < len(blocks) - 1:
                         i += 1
                     else:
@@ -176,9 +149,10 @@ def main():
     # In this case: mono
     channels = 1
     # The note file
-    filename = 'tests/notefile.txt'
+    song = str(sys.argv[1])
+    filename = "tests/" + song + ".txt"
     # Play the song
-    play_song(sampling_rate,bits,channels,filename)
+    play_song(sampling_rate, bits, channels, filename)
 
 if __name__=="__main__":
     main()
